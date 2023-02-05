@@ -17,8 +17,10 @@ public class GetEmployeeByNameHandler : IRequestHandler<GetEmployeeByNameQuery, 
 
     public async Task<GetEmployeeByNameResponse> Handle(GetEmployeeByNameQuery request, CancellationToken cancellationToken)
     {
-        var entity = await _repository.GetEmployeeByName(request.Name);
-        
-        return _mapper.Map<GetEmployeeByNameResponse>(entity);
+        var entity = await _repository.GetEmployeeByName(request.Name ?? string.Empty);
+
+        var res = _mapper.Map<List<GetEmployeeByNameVm>>(entity);
+
+        return new GetEmployeeByNameResponse { Employees = res };
     }
 }

@@ -3,9 +3,7 @@ using GateCLO.Application.Contracts.Infrastructure;
 using GateCLO.Application.Features.Employee.Commands.Create;
 using GateCLO.Application.Features.Employee.Queries.GetEmployeeByName;
 using GateCLO.Application.Features.Employee.Queries.GetEmployees;
-using GateCLO.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using X.PagedList;
 
 namespace GateCLO.Api.Controllers;
 
@@ -16,6 +14,10 @@ public class EmployeeController : ApiControllerBase
 {
     private readonly ICsvFileParser _csvFileParser;
 
+    /// <summary>
+    /// Employee Controller
+    /// </summary>
+    /// <param name="csvFileParser">DI Csv file Parser Service</param>
     public EmployeeController(ICsvFileParser csvFileParser)
     {
         _csvFileParser = csvFileParser;
@@ -27,13 +29,13 @@ public class EmployeeController : ApiControllerBase
     /// <param name="query"></param>
     /// <returns>직원 연락 정보</returns>
     [HttpGet]
-    public async Task<ActionResult<IList<Employee>>> GetEmployeeList([FromQuery] GetEmployeesQuery query)
+    public async Task<ActionResult<IList<GetEmployeesVm>>?> GetEmployeeList([FromQuery] GetEmployeesQuery query)
     {
         var res = await Mediator.Send(query);
 
-        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(res.GetMetaData()));
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(res.MetaData));
 
-        return await res.ToListAsync();
+        return res.Employees;
     }
 
     /// <summary>
@@ -42,9 +44,11 @@ public class EmployeeController : ApiControllerBase
     /// <param name="Name">직원 이름</param>
     /// <returns>직원의 상세 연락정보</returns>
     [HttpGet("{Name}")]
-    public async Task<ActionResult<GetEmployeeByNameResponse>> GetEmployeeByName(string Name)
+    public async Task<ActionResult<IList<GetEmployeeByNameVm>>?> GetEmployeeByName(string Name)
     {
-        return await Mediator.Send(new GetEmployeeByNameQuery { Name = Name });
+        var res = await Mediator.Send(new GetEmployeeByNameQuery { Name = Name });
+
+        return res.Employees;
     }
 
     /// <summary>
@@ -80,10 +84,9 @@ public class EmployeeController : ApiControllerBase
                 }
                 break;
             case "text/csv":
-                var commandcsv = await _csvFileParser.EmployeeCsvReader(formFile);
+                var commandCsv = await _csvFileParser.EmployeeCsvReader(formFile);
 
-                return Created(nameof(CreateEmployee), await Mediator.Send(new CreateEmployeeCommand { EmployeeVms = commandcsv }));
-                break;
+                return Created(nameof(CreateEmployee), await Mediator.Send(new CreateEmployeeCommand { EmployeeVms = commandCsv }));
             default:
                 return new UnsupportedMediaTypeResult();
         }

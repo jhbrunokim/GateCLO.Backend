@@ -1,11 +1,10 @@
 using AutoMapper;
 using GateCLO.Application.Contracts.Infrastructure;
 using MediatR;
-using X.PagedList;
 
 namespace GateCLO.Application.Features.Employee.Queries.GetEmployees;
 
-public class GetEmployeeQueryHandler : IRequestHandler<GetEmployeesQuery, IPagedList<Domain.Entities.Employee>>
+public class GetEmployeeQueryHandler : IRequestHandler<GetEmployeesQuery, GetEmployeesResponse>
 {
     private readonly IEmployeeRepository _repository;
     private readonly IMapper _mapper;
@@ -16,13 +15,24 @@ public class GetEmployeeQueryHandler : IRequestHandler<GetEmployeesQuery, IPaged
         _mapper = mapper;
     }
 
-    public async Task<IPagedList<Domain.Entities.Employee>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
+    public async Task<GetEmployeesResponse> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
     {
         if (request.page == 0)
         {
-            return await _repository.GetAllAsync();
+            var temp = await _repository.GetAllAsync();
+            return new GetEmployeesResponse
+            {
+                Employees = _mapper.Map<List<GetEmployeesVm>>(temp.ToList()),
+                MetaData = temp.GetMetaData()
+            };
         }
 
-        return await _repository.GetEmployeeList(request.page, request.pageSize);
+        var templ = await _repository.GetEmployeeList(request.page, request.pageSize);
+
+        return new GetEmployeesResponse
+        {
+            Employees = _mapper.Map<List<GetEmployeesVm>>(templ.ToList()),
+            MetaData = templ.GetMetaData()
+        };
     }
 }

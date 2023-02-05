@@ -22,7 +22,7 @@ public class GateCLOWebApplication : WebApplicationFactory<Program>
         {
             var descriptor = s.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<GateCloDbContext>));
 
-            s.Remove(descriptor);
+            if (descriptor != null) s.Remove(descriptor);
 
             s.AddDbContext<GateCloDbContext>(o =>
             {
@@ -33,14 +33,7 @@ public class GateCLOWebApplication : WebApplicationFactory<Program>
 
             using var scope = serviceProvider.CreateScope();
             using var appContext = scope.ServiceProvider.GetRequiredService<GateCloDbContext>();
-            try
-            {
-                appContext.Database.EnsureCreated();
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
+            appContext.Database.EnsureCreated();
         });
 
         return base.CreateHost(builder);

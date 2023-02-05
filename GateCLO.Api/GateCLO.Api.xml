@@ -4,10 +4,26 @@
         <name>GateCLO.Api</name>
     </assembly>
     <members>
+        <member name="T:GateCLO.Api.Controllers.ApiControllerBase">
+            <summary>
+            API Controller Base
+            </summary>
+        </member>
+        <member name="P:GateCLO.Api.Controllers.ApiControllerBase.Mediator">
+            <summary>
+            Mediator
+            </summary>
+        </member>
         <member name="T:GateCLO.Api.Controllers.EmployeeController">
             <summary>
             직원
             </summary>
+        </member>
+        <member name="M:GateCLO.Api.Controllers.EmployeeController.#ctor(GateCLO.Application.Contracts.Infrastructure.ICsvFileParser)">
+            <summary>
+            Employee Controller
+            </summary>
+            <param name="csvFileParser">DI Csv file Parser Service</param>
         </member>
         <member name="M:GateCLO.Api.Controllers.EmployeeController.GetEmployeeList(GateCLO.Application.Features.Employee.Queries.GetEmployees.GetEmployeesQuery)">
             <summary>

@@ -6,5 +6,6 @@ public class CreateEmployeeCommandValidator : AbstractValidator<CreateEmployeeCo
 {
     public CreateEmployeeCommandValidator()
     {
+        RuleForEach(s => s.EmployeeVms).NotNull().SetValidator(new EmployeeVmValidator());
     }
 }

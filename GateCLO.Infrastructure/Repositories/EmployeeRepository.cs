@@ -13,14 +13,14 @@ public class EmployeeRepository : IEmployeeRepository
         _context = context;
     }
 
-    public async Task<IPagedList<Employee>> GetAllAsync()
+    public Task<IPagedList<Employee>> GetAllAsync()
     {
-        return _context.Employees.ToPagedList();
+        return Task.FromResult(_context.Employees.ToPagedList());
     }
 
-    public async Task<Employee> GetEmployeeByName(string name)
+    public async Task<IList<Employee>> GetEmployeeByName(string name)
     {
-        return _context.Employees.FirstOrDefault(s => s.Name == name)!;
+        return await _context.Employees.Where(s => s.Name == name).ToListAsync();
     }
 
     public async Task<IPagedList<Employee>> GetEmployeeList(int page, int pageSize)
