@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GateCLO.Api</name>
+    </assembly>
+    <members>
+        <member name="T:GateCLO.Api.Controllers.EmployeeController">
+            <summary>
+            직원
+            </summary>
+        </member>
+        <member name="M:GateCLO.Api.Controllers.EmployeeController.GetEmployeeList(GateCLO.Application.Features.Employee.Queries.GetEmployees.GetEmployeesQuery)">
+            <summary>
+            직원들의 기본 연락 정보를 얻을 수 있습니다.
+            </summary>
+            <param name="query"></param>
+            <returns>직원 연락 정보</returns>
+        </member>
+        <member name="M:GateCLO.Api.Controllers.EmployeeController.GetEmployeeByName(System.String)">
+            <summary>
+            직원의 기본 연락 정보를 얻을 수 있습니다.
+            </summary>
+            <param name="Name">직원 이름</param>
+            <returns>직원의 상세 연락정보</returns>
+        </member>
+        <member name="M:GateCLO.Api.Controllers.EmployeeController.CreateEmployee(System.Collections.Generic.IList{EmployeeVm})">
+            <summary>
+            직원의 기본 연락 정보를 추가 할 수 있습니다.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GateCLO.Api.Controllers.EmployeeController.CreateEmployee(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            직원의 기본 연락 정보를 추가 할 수 있습니다.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
