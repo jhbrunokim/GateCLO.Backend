@@ -4,6 +4,8 @@ using System.Reflection;
 using GateClo.Infrastructure;
 using GateCLO.Infrastructure;
 
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -36,7 +38,15 @@ builder.Services.AddSwaggerGen(s =>
     s.IncludeXmlComments(xmlPath);
 });
 
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext()
+    .WriteTo.Console(Serilog.Events.LogEventLevel.Error)
+    .WriteTo.File(@"log.txt", Serilog.Events.LogEventLevel.Information, rollingInterval: RollingInterval.Day));
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -50,6 +60,8 @@ if (app.Environment.IsDevelopment())
         await initialiser.InitializeAsync();
     }
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
